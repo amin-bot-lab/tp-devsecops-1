@@ -14,9 +14,17 @@ jobs:
         working-directory: democyber
 
     steps:
+      # 1. Récupérer le code
       - name: Checkout
         uses: actions/checkout@v4
 
+      # 2. Scanner les secrets avec Gitleaks
+      - name: Run Gitleaks scan
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # 3. Installer Java
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
@@ -25,15 +33,18 @@ jobs:
           cache: maven
           cache-dependency-path: democyber/pom.xml
 
+      # 4. Compiler et tester
       - name: Build and Test
         run: mvn clean verify
 
+      # 5. Connexion Docker Hub
       - name: Docker Hub Login
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      # 6. Construire et publier l'image
       - name: Docker Build and Push
         run: |
           docker build -t jbaliamina/democyber:latest .
