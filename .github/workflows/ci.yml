@@ -108,3 +108,10 @@ jobs:
           if-no-files-found: error
 
 
+      # 11. Publier l'image sur Docker Hub
+      - name: Push Docker image
+        if: success()
+        run: docker push jbaliamina/democyber:latest
+
+
+
