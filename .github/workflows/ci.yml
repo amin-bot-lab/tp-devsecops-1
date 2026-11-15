@@ -45,17 +45,32 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       # 6. Construire et publier l'image
-      - name: Docker Build and Push
+      - name: Docker Build
+        run: docker build -t jbaliamina/democyber:latest .
+
+      # 7. Tester l'image Docker
+      - name: Test Docker image
         run: |
-          docker build -t jbaliamina/democyber:latest .
-          docker push jbaliamina/democyber:latest 
+          docker run -d --name democyber-test -p 8080:8080 jbaliamina/democyber:latest
+          sleep 10
+          curl -f http://localhost:8080
+          docker stop democyber-test
+          docker rm democyber-test
 
 
       # Sauvegarder le rapport Gitleaks
+
+      - name: Check Gitleaks report
+        if: always()
+        run: |
+          find .. -name "results.sarif" -type f
+
       - name: Upload Gitleaks report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: gitleaks-report
-          path: results.sarif
+          path: |
+            results.sarif
+            democyber/results.sarif
           if-no-files-found: warn
