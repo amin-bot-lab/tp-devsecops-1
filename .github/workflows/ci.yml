@@ -74,3 +74,13 @@ jobs:
             results.sarif
             democyber/results.sarif
           if-no-files-found: warn
+
+      # Scanner l'image Docker avec Trivy
+      - name: Scan Docker image with Trivy
+        uses: aquasecurity/trivy-action@0.20.0
+        with:
+          image-ref: jbaliamina/democyber:latest
+          format: 'table'
+          exit-code: '1'
+          severity: 'CRITICAL,HIGH'
+
