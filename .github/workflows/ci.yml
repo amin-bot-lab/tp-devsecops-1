@@ -49,3 +49,13 @@ jobs:
         run: |
           docker build -t jbaliamina/democyber:latest .
           docker push jbaliamina/democyber:latest 
+
+
+      # Sauvegarder le rapport Gitleaks
+      - name: Upload Gitleaks report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gitleaks-report
+          path: results.sarif
+          if-no-files-found: warn
