@@ -48,4 +48,4 @@ jobs:
       - name: Docker Build and Push
         run: |
           docker build -t jbaliamina/democyber:latest .
-          docker push jbaliamina/democyber:latest
+          docker push jbaliamina/democyber:latest 
